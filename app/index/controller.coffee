@@ -4,29 +4,29 @@ IndexController = Ember.Controller.extend
 
   isLoading: false
 
-  map: null
+  publicAPI: null
   lat: 37.0902
   lng: -95.7129
   zoom: 4
   mapStyle: {}
 
+  marker: null
+  # markers: Em.A()
   markers: Em.A([{
     name: 'Test'
     lat: 37.0902
     lng: -95.7129
-    active: false
     isOpen: false
   }])
 
-  # selectedMarker: null
-
   location: null
 
-  promptAddLocation: (lat, lng) ->
+  promptAddLocation: (lat, lng, latLng) ->
     @set('location', {
-      name: 'Test'
+      name: ''
       lat: lat
-      lng: lng
+      lng: lng,
+      latLng: latLng
     })
     @set('isAddingLocation', true)
 
@@ -40,26 +40,24 @@ IndexController = Ember.Controller.extend
 
   actions:
 
-    onLoad: (map) ->
+    onLoad: (publicAPI) ->
       console.log("LOADED MAP")
-      @set('map', map)
-
-    toggle: (m, e) ->
-      console.log("TOGGLE")
-      Ember.set(m, 'isOpen', true)
+      @set('publicAPI', publicAPI)
 
     hover: (m, e) ->
       console.log("HOVER")
       Ember.set(m, 'isOpen', true)
+      @set('marker', m)
 
     leave: (m, e) ->
       console.log("LEAVE")
       Ember.set(m, 'isOpen', false)
+      @set('marker', null)
 
     clickedMap: (e) ->
       console.log("CLICKED MAP: ", e)
       ge = e.googleEvent
-      @promptAddLocation(ge.latLng.lat(), ge.latLng.lng())
+      @promptAddLocation(ge.latLng.lat(), ge.latLng.lng(), ge.latLng)
 
     cancelAddLocation: ->
       @cancelAddLocation()

@@ -15,16 +15,25 @@ class GenerateTask extends Task {
 
   run(options) {
     let name = options.args[0];
+    let isNotModuleUnification = !this.project.isModuleUnification();
     let noAddonBlueprint = ['mixin', 'blueprint-test'];
 
     let mainBlueprint = this.lookupBlueprint(name, options.ignoreMissingMain);
     let testBlueprint = this.lookupBlueprint(`${name}-test`, true);
-    // lookup custom addon blueprint
-    let addonBlueprint = this.lookupBlueprint(`${name}-addon`, true);
-    // otherwise, use default addon-import
 
-    if (noAddonBlueprint.indexOf(name) < 0 && !addonBlueprint && (mainBlueprint && mainBlueprint.supportsAddon()) && options.args[1]) {
-      addonBlueprint = this.lookupBlueprint('addon-import', true);
+    // lookup custom addon blueprint
+    let addonBlueprint;
+    if (isNotModuleUnification) {
+      addonBlueprint = this.lookupBlueprint(`${name}-addon`, true);
+
+      // otherwise, use default addon-import
+      if (noAddonBlueprint.indexOf(name) < 0 && !addonBlueprint && options.args[1]) {
+        let mainBlueprintSupportsAddon = mainBlueprint && mainBlueprint.supportsAddon() && isNotModuleUnification;
+
+        if (mainBlueprintSupportsAddon) {
+          addonBlueprint = this.lookupBlueprint('addon-import', true);
+        }
+      }
     }
 
     if (options.ignoreMissingMain && !mainBlueprint) {

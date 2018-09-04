@@ -10,34 +10,24 @@
         styles=mapStyle
         onClick=(action "clickedMap")
         onLoad=(action "onLoad") as |g|}}
-        <!-- {{#g.infoWindow
-            lat=selectedMarker.lat
-            lng=selectedMarker.lng
-            isOpen=true as |i|}}
+        {{#each markers as |marker|}}
+          {{#g.overlay lat=marker.lat lng=marker.lng onMouseover=(action "hover" marker) as |o|}}
+            <div class="location-overlay">
+              <img class="location-thumbnail" src="/assets/images/building-1.jpeg" alt="Building" width="60px" height="60px">
+              <div class="location-name">{{marker.name}}</div>
+              <div class="bullet">•</div>
+            </div>
+          {{/g.overlay}}
+        {{/each}}
+        {{#g.infoWindow lat=marker.lat lng=marker.lng isOpen=marker.isOpen  as |i|}}
           <div class="info-window-content">
             <img src="/assets/images/building-1.jpeg" alt="Building" height="60px">
             <div class="location-details">
-              <div class="location-name">{{selectedMarker.name}}</div>
+              <div class="location-name">{{marker.name}}</div>
               <div class="location-info">Details about your stay would be here.</div>
             </div>
           </div>
-        {{/g.infoWindow}} -->
-        {{#each markers as |marker|}}
-          <!-- {{#g.marker lat=marker.lat lng=marker.lng onMouseover=(action "hover" marker) onMouseleave=(action "leave" marker) as |m|}}
-            <img src="/assets/images/building-1.jpeg" alt="Building" height="60px">
-            <div class="location-marker">
-              {{marker.name}}
-            </div>
-          {{/g.marker}} -->
-          {{#g.marker lat=marker.lat lng=marker.lng onMouseover=(action "hover" marker) onMouseleave=(action "leave" marker) as |m|}}
-            <div class="marker-content">
-              <img src="/assets/images/building-1.jpeg" alt="Building" height="60px">
-              <div class="location-marker">
-                {{marker.name}}
-              </div>
-            </div>
-          {{/g.marker}}
-        {{/each}}
+        {{/g.infoWindow}}
     {{/g-map}}
   </div>
   <div class="list-of-markers">
