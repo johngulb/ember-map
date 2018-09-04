@@ -11,13 +11,7 @@ IndexController = Ember.Controller.extend
   mapStyle: {}
 
   marker: null
-  # markers: Em.A()
-  markers: Em.A([{
-    name: 'Test'
-    lat: 37.0902
-    lng: -95.7129
-    isOpen: false
-  }])
+  markers: Em.A()
 
   location: null
 
