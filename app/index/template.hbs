@@ -20,9 +20,11 @@
             {{location-overlay location=location}}
           {{/g.overlay}}
         {{/each}}
-        {{#g.infoWindow lat=selectedLocation.lat lng=selectedLocation.lng isOpen=selectedLocation.isOpen as |i|}}
-          {{location-info location=selectedLocation}}
-        {{/g.infoWindow}}
+        {{#if selectedLocation}}
+          {{#g.infoWindow lat=selectedLocation.lat lng=selectedLocation.lng isOpen=true as |i|}}
+            {{location-info location=selectedLocation}}
+          {{/g.infoWindow}}
+        {{/if}}
     {{/g-map}}
   </div>
 

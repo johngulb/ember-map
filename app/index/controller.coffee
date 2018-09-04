@@ -27,10 +27,7 @@ IndexController = Ember.Controller.extend
       thumbnail: "/assets/images/building-#{i}.jpeg"
     })
     @set('isAddingLocation', true)
-
-  cancelAddLocation: ->
-    @set('newLocation', null)
-    @set('isAddingLocation', false)
+    @clearInfoWindows()
 
   submitLocation: ->
     @set('isAddingLocation', false)
@@ -39,6 +36,24 @@ IndexController = Ember.Controller.extend
     @get('locations').addObject(location)
     if last
       @addCurve(location, last)
+
+  cancelAddLocation: ->
+    @set('newLocation', null)
+    @set('isAddingLocation', false)
+
+  # select a location to show the info window for
+  selectLocation: (loc) ->
+    @set('selectedLocation', loc)
+    map = @get('map')
+    # when scrolling over the map over, remove info window
+    Ember.run.later this, =>
+      map.addListener 'mousemove', =>
+        @clearInfoWindows()
+        google.maps.event.clearListeners(map, 'mousemove')
+    , 200
+
+  clearInfoWindows: ->
+    @set('selectedLocation', null)
 
   addCurve: (marker1, marker2) ->
     curvature = 0.5
@@ -59,7 +74,7 @@ IndexController = Ember.Controller.extend
 
     zoom = map.getZoom()
     scale = 1 / (Math.pow(2, -zoom))
-    
+
     curveMarker = new google.maps.Marker
         position:
           lat: marker1.lat
@@ -79,13 +94,8 @@ IndexController = Ember.Controller.extend
     onLoad: (publicAPI) ->
       @set('publicAPI', publicAPI)
 
-    hover: (m, e) ->
-      Ember.set(m, 'isOpen', true)
-      @set('selectedLocation', m)
-
-    leave: (m, e) ->
-      Ember.set(m, 'isOpen', false)
-      @set('selectedLocation', null)
+    hover: (l, e) ->
+      @selectLocation(l)
 
     clickedMap: (e) ->
       ge = e.googleEvent
