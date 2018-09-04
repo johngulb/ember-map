@@ -13,7 +13,7 @@
         {{#each markers as |marker|}}
           {{#g.overlay lat=marker.lat lng=marker.lng onMouseover=(action "hover" marker) as |o|}}
             <div class="location-overlay">
-              <img class="location-thumbnail" src="/assets/images/building-1.jpeg" alt="Building" width="60px" height="60px">
+              <img class="location-thumbnail" src={{marker.thumbnail}} alt="Building" width="60px" height="60px">
               <div class="location-name">{{marker.name}}</div>
               <div class="bullet">•</div>
             </div>
@@ -21,7 +21,7 @@
         {{/each}}
         {{#g.infoWindow lat=marker.lat lng=marker.lng isOpen=marker.isOpen  as |i|}}
           <div class="info-window-content">
-            <img src="/assets/images/building-1.jpeg" alt="Building" height="60px">
+            <img src={{marker.thumbnail}} alt="Building" height="60px">
             <div class="location-details">
               <div class="location-name">{{marker.name}}</div>
               <div class="location-info">Details about your stay would be here.</div>

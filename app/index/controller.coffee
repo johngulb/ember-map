@@ -15,24 +15,29 @@ IndexController = Ember.Controller.extend
     name: 'Oklahoma'
     lat: 35.459510735
     lng: -96.767587499
+    thumbnail: "/assets/images/building-1.jpeg"
   },{
     name: 'Florida'
     lat: 28.070724533
     lng: -81.738290624
+    thumbnail: "/assets/images/building-2.jpeg"
   },{
     name: 'Mexico'
     lat: 23.88453639
     lng: -103.00782187
+    thumbnail: "/assets/images/building-3.jpeg"
   }])
 
   location: null
 
   promptAddLocation: (lat, lng, latLng) ->
+    i = @get('markers.length') % 3 + 1
     @set('location', {
       name: ''
       lat: lat
       lng: lng,
       latLng: latLng
+      thumbnail: "/assets/images/building-#{i}.jpeg"
     })
     @set('isAddingLocation', true)
 
