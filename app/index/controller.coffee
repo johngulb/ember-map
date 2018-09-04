@@ -10,65 +10,86 @@ IndexController = Ember.Controller.extend
   zoom: 4
   mapStyle: {}
 
-  marker: null
-  markers: Em.A([{
-    name: 'Oklahoma'
-    lat: 35.459510735
-    lng: -96.767587499
-    thumbnail: "/assets/images/building-1.jpeg"
-  },{
-    name: 'Florida'
-    lat: 28.070724533
-    lng: -81.738290624
-    thumbnail: "/assets/images/building-2.jpeg"
-  },{
-    name: 'Mexico'
-    lat: 23.88453639
-    lng: -103.00782187
-    thumbnail: "/assets/images/building-3.jpeg"
-  }])
+  map: Ember.computed 'publicAPI.map', ->
+    @get('publicAPI.map')
 
-  location: null
+  selectedLocation: null
+  newLocation: null
+  locations: Em.A()
 
-  promptAddLocation: (lat, lng, latLng) ->
-    i = @get('markers.length') % 3 + 1
-    @set('location', {
+  promptAddLocation: (latLng) ->
+    i = @get('locations.length') % 3 + 1
+    @set('newLocation', {
       name: ''
-      lat: lat
-      lng: lng,
+      lat: latLng.lat()
+      lng: latLng.lng()
       latLng: latLng
       thumbnail: "/assets/images/building-#{i}.jpeg"
     })
     @set('isAddingLocation', true)
 
   cancelAddLocation: ->
-    @set('location', null)
+    @set('newLocation', null)
     @set('isAddingLocation', false)
 
   submitLocation: ->
     @set('isAddingLocation', false)
-    @get('markers').addObject(@get('location'))
+    location = @get('newLocation')
+    last = @get('locations.lastObject')
+    @get('locations').addObject(location)
+    if last
+      @addCurve(location, last)
+
+  addCurve: (marker1, marker2) ->
+    curvature = 0.5
+    map = @get('map')
+    p1 = marker1.point
+    p2 = marker2.point
+
+    projection = map.getProjection()
+    p1 = projection.fromLatLngToPoint(marker1.latLng)
+    p2 = projection.fromLatLngToPoint(marker2.latLng)
+
+    e = new google.maps.Point(p2.x - p1.x, p2.y - p1.y) # endpoint (p2 relative to p1)
+    m = new google.maps.Point(e.x / 2, e.y / 2) # midpoint
+    o = new google.maps.Point(e.y, -e.x) # orthogonal
+    c = new google.maps.Point(m.x + curvature * o.x, m.y + curvature * o.y) # curve control point
+
+    pathDef = 'M 0,0 ' + 'q ' + c.x + ',' + c.y + ' ' + e.x + ',' + e.y
+
+    zoom = map.getZoom()
+    scale = 1 / (Math.pow(2, -zoom))
+    
+    curveMarker = new google.maps.Marker
+        position:
+          lat: marker1.lat
+          lng: marker1.lng
+        clickable: false
+        icon:
+          path: pathDef
+          scale: scale
+          strokeWeight: 2
+          fillColor: 'none'
+        zIndex: 0
+        map: map
+
 
   actions:
 
     onLoad: (publicAPI) ->
-      console.log("LOADED MAP")
       @set('publicAPI', publicAPI)
 
     hover: (m, e) ->
-      console.log("HOVER")
       Ember.set(m, 'isOpen', true)
-      @set('marker', m)
+      @set('selectedLocation', m)
 
     leave: (m, e) ->
-      console.log("LEAVE")
       Ember.set(m, 'isOpen', false)
-      @set('marker', null)
+      @set('selectedLocation', null)
 
     clickedMap: (e) ->
-      console.log("CLICKED MAP: ", e)
       ge = e.googleEvent
-      @promptAddLocation(ge.latLng.lat(), ge.latLng.lng(), ge.latLng)
+      @promptAddLocation(ge.latLng)
 
     cancelAddLocation: ->
       @cancelAddLocation()

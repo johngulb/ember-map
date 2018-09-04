@@ -9,23 +9,26 @@
         lat=lat
         lng=lng
         zoom=zoom
+        zoomControl=false
+        scrollwheel=false
+        disableDefaultUI=true
         styles=mapStyle
         onClick=(action "clickedMap")
         onLoad=(action "onLoad") as |g|}}
-        {{#each markers as |marker|}}
-          {{#g.overlay lat=marker.lat lng=marker.lng onMouseover=(action "hover" marker) as |o|}}
-            {{location-overlay location=marker}}
+        {{#each locations as |location|}}
+          {{#g.overlay lat=location.lat lng=location.lng onMouseover=(action "hover" location) as |o|}}
+            {{location-overlay location=location}}
           {{/g.overlay}}
         {{/each}}
-        {{#g.infoWindow lat=marker.lat lng=marker.lng isOpen=marker.isOpen as |i|}}
-          {{location-info location=marker}}
+        {{#g.infoWindow lat=selectedLocation.lat lng=selectedLocation.lng isOpen=selectedLocation.isOpen as |i|}}
+          {{location-info location=selectedLocation}}
         {{/g.infoWindow}}
     {{/g-map}}
   </div>
 
   <div class="list-of-markers">
-    {{#each markers as |m|}}
-      <div class="marker">{{m.name}} ({{m.lat}},{{m.lng}})</div>
+    {{#each locations as |l|}}
+      <div class="marker">{{l.name}} ({{l.lat}},{{l.lng}})</div>
     {{/each}}
   </div>
 
@@ -36,7 +39,7 @@
 
     {{#paper-dialog-content}}
       <h2 class="md-title">Add a name for this location</h2>
-      {{paper-input placeholder="name" autofocus=true value=location.name onChange=(action (mut location.name))}}
+      {{paper-input placeholder="name" autofocus=true value=newLocation.name onChange=(action (mut newLocation.name))}}
     {{/paper-dialog-content}}
 
     {{#paper-dialog-actions class="layout-row"}}
