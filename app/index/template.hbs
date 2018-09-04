@@ -1,5 +1,65 @@
 <div class="index-page">
   <div class="header">
-    <h1 class='title'>Build something great.</h1>
+    <h1 class='title'>The United States</h1>
+  </div>
+  <div class="map-box">
+    {{#g-map
+        lat=lat
+        lng=lng
+        zoom=zoom
+        styles=mapStyle
+        onClick=(action "clickedMap")
+        onLoad=(action "onLoad") as |g|}}
+        <!-- {{#g.infoWindow
+            lat=selectedMarker.lat
+            lng=selectedMarker.lng
+            isOpen=true as |i|}}
+          <div class="info-window-content">
+            <img src="/assets/images/building-1.jpeg" alt="Building" height="60px">
+            <div class="location-details">
+              <div class="location-name">{{selectedMarker.name}}</div>
+              <div class="location-info">Details about your stay would be here.</div>
+            </div>
+          </div>
+        {{/g.infoWindow}} -->
+        {{#each markers as |marker|}}
+          <!-- {{#g.marker lat=marker.lat lng=marker.lng onMouseover=(action "hover" marker) onMouseleave=(action "leave" marker) as |m|}}
+            <img src="/assets/images/building-1.jpeg" alt="Building" height="60px">
+            <div class="location-marker">
+              {{marker.name}}
+            </div>
+          {{/g.marker}} -->
+          {{#g.marker lat=marker.lat lng=marker.lng onMouseover=(action "hover" marker) onMouseleave=(action "leave" marker) as |m|}}
+            <div class="marker-content">
+              <img src="/assets/images/building-1.jpeg" alt="Building" height="60px">
+              <div class="location-marker">
+                {{marker.name}}
+              </div>
+            </div>
+          {{/g.marker}}
+        {{/each}}
+    {{/g-map}}
+  </div>
+  <div class="list-of-markers">
+    {{#each markers as |m|}}
+      <div class="marker">{{m.name}} ({{m.lat}},{{m.lng}})</div>
+    {{/each}}
   </div>
 </div>
+
+{{#if isAddingLocation}}
+  {{#paper-dialog onClose=(action "cancelAddLocation")}}
+
+    {{#paper-dialog-content}}
+      <h2 class="md-title">Add a name for this location</h2>
+      {{paper-input placeholder="name" autofocus=true value=location.name onChange=(action (mut location.name))}}
+    {{/paper-dialog-content}}
+
+    {{#paper-dialog-actions class="layout-row"}}
+      <span class="flex"></span>
+      {{#paper-button primary=true onClick=(action "cancelAddLocation")}}Cancel{{/paper-button}}
+      {{#paper-button primary=true onClick=(action "submitLocation")}}Submit{{/paper-button}}
+    {{/paper-dialog-actions}}
+
+  {{/paper-dialog}}
+{{/if}}
