@@ -1,0 +1,23 @@
+.location-overlay {
+
+  .location-thumbnail {
+    border-radius: 4px;
+    border: solid 1px #eee;
+  }
+
+  .location-name {
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+    margin: 4px;
+    padding: 2px;
+  }
+
+  .bullet {
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 0;
+  }
+
+}

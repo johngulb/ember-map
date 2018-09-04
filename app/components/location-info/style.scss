@@ -1,0 +1,9 @@
+.location-info {
+  display: inline-flex;
+  .location-details {
+    padding: 12px;
+    .location-name {
+      font-size: 2em;
+    }
+  }
+}

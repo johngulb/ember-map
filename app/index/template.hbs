@@ -1,7 +1,9 @@
 <div class="index-page">
+
   <div class="header">
     <h1 class='title'>The United States</h1>
   </div>
+
   <div class="map-box">
     {{#g-map
         lat=lat
@@ -12,29 +14,21 @@
         onLoad=(action "onLoad") as |g|}}
         {{#each markers as |marker|}}
           {{#g.overlay lat=marker.lat lng=marker.lng onMouseover=(action "hover" marker) as |o|}}
-            <div class="location-overlay">
-              <img class="location-thumbnail" src={{marker.thumbnail}} alt="Building" width="60px" height="60px">
-              <div class="location-name">{{marker.name}}</div>
-              <div class="bullet">•</div>
-            </div>
+            {{location-overlay location=marker}}
           {{/g.overlay}}
         {{/each}}
-        {{#g.infoWindow lat=marker.lat lng=marker.lng isOpen=marker.isOpen  as |i|}}
-          <div class="info-window-content">
-            <img src={{marker.thumbnail}} alt="Building" height="60px">
-            <div class="location-details">
-              <div class="location-name">{{marker.name}}</div>
-              <div class="location-info">Details about your stay would be here.</div>
-            </div>
-          </div>
+        {{#g.infoWindow lat=marker.lat lng=marker.lng isOpen=marker.isOpen as |i|}}
+          {{location-info location=marker}}
         {{/g.infoWindow}}
     {{/g-map}}
   </div>
+
   <div class="list-of-markers">
     {{#each markers as |m|}}
       <div class="marker">{{m.name}} ({{m.lat}},{{m.lng}})</div>
     {{/each}}
   </div>
+
 </div>
 
 {{#if isAddingLocation}}
