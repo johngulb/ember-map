@@ -11,7 +11,19 @@ IndexController = Ember.Controller.extend
   mapStyle: {}
 
   marker: null
-  markers: Em.A()
+  markers: Em.A([{
+    name: 'Oklahoma'
+    lat: 35.459510735
+    lng: -96.767587499
+  },{
+    name: 'Florida'
+    lat: 28.070724533
+    lng: -81.738290624
+  },{
+    name: 'Mexico'
+    lat: 23.88453639
+    lng: -103.00782187
+  }])
 
   location: null
 
