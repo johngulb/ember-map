@@ -1,0 +1,42 @@
+<div class="location-map">
+
+  {{#g-map
+      lat=lat
+      lng=lng
+      zoom=zoom
+      zoomControl=false
+      scrollwheel=false
+      disableDefaultUI=true
+      styles=mapStyle
+      onClick=(action "clickedMap")
+      onLoad=(action "onLoad") as |g|}}
+      {{#each locations as |location|}}
+        {{#g.overlay lat=location.lat lng=location.lng onMouseover=(action "hover" location) as |o|}}
+          {{location/overlay-view location=location}}
+        {{/g.overlay}}
+      {{/each}}
+      {{#if selectedLocation}}
+        {{#g.infoWindow lat=selectedLocation.lat lng=selectedLocation.lng isOpen=true as |i|}}
+          {{location/info-view location=selectedLocation}}
+        {{/g.infoWindow}}
+      {{/if}}
+  {{/g-map}}
+
+</div>
+
+{{#if isAddingLocation}}
+  {{#paper-dialog onClose=(action "cancelAddLocation")}}
+
+    {{#paper-dialog-content}}
+      <h2 class="md-title">Add a name for this location</h2>
+      {{paper-input placeholder="name" autofocus=true value=newLocation.name onChange=(action (mut newLocation.name))}}
+    {{/paper-dialog-content}}
+
+    {{#paper-dialog-actions class="layout-row"}}
+      <span class="flex"></span>
+      {{#paper-button primary=true onClick=(action "cancelAddLocation")}}Cancel{{/paper-button}}
+      {{#paper-button primary=true onClick=(action "submitLocation")}}Submit{{/paper-button}}
+    {{/paper-dialog-actions}}
+
+  {{/paper-dialog}}
+{{/if}}
